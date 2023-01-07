@@ -3,16 +3,22 @@
 Below are the description of the task and more details on how the bullets points are fulfilled.
 
 - [ ] MAIN
-- [ ] Bonus 1
-- [ ] Bonus 2
-- [ ] Bonus 3
+    - [x] Enable unit test and coverage
+    - [ ] Fail if coverage score is below 100%
+    - [ ] Document exclusions
+- [ ] Bonus 1 - Wholes in the map
+- [ ] Bonus 2 - Notification on Robot moves
+- [ ] Bonus 3 - Mutation Testing
+    - [x] Enable mutation testing
+    - [ ] Fail if mutations score is below 100%
+    - [ ] Document exclusions
 
 ## TRIAL TASK
 
+### MAIN
+
 Make an app robot-tracker. (It can be backend or frontend or both, it can be in any tech stack.). The application is
 covered by automated tests.
-
-### MAIN
 
 The robot is at certain coordinates, (e.g. 5km North, 3km East). We can tell the robot to move, e.g. move 1km West, 4km
 South, 2km North, 7km North, etc, and we get the robot's new coordinates. At any point, we can ask the system to give us
