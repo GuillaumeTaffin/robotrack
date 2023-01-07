@@ -24,9 +24,13 @@ class BaseApiTests {
             registry.add("spring.r2dbc.url", BaseApiTests::r2dbcUrl)
             registry.add("spring.r2dbc.username", postgres::getUsername)
             registry.add("spring.r2dbc.password", postgres::getPassword)
+            registry.add("spring.flyway.url", postgres::getJdbcUrl)
+            registry.add("spring.flyway.user", postgres::getUsername)
+            registry.add("spring.flyway.password", postgres::getPassword)
         }
 
-        private fun r2dbcUrl() = "r2dbc:postgresql://${postgres.host}:${postgres.firstMappedPort}/${postgres.databaseName}"
+        private fun r2dbcUrl() =
+            "r2dbc:postgresql://${postgres.host}:${postgres.firstMappedPort}/${postgres.databaseName}"
     }
 
 }
