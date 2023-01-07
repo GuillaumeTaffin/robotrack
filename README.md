@@ -2,10 +2,10 @@
 
 Below are the description of the task and more details on how the bullets points are fulfilled.
 
-- [] MAIN
-- [] Bonus 1
-- [] Bonus 2
-- [] Bonus 3
+- [ ] MAIN
+- [ ] Bonus 1
+- [ ] Bonus 2
+- [ ] Bonus 3
 
 ## TRIAL TASK
 
