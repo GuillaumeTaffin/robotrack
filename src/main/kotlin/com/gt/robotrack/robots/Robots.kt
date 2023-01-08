@@ -47,7 +47,20 @@ class Robots(
         return repository.deleteById(id)
     }
 
+    @PostMapping("/{id}/move")
+    fun moveRobot(@RequestBody moveDto: MoveDto, @PathVariable id: Int): Mono<RobotDto> {
+        return repository.findById(id)
+            .map { it.applyMove(moveDto) }
+            .flatMap { repository.save(it) }
+            .map { recordToDto(it) }
+    }
+
 }
+
+data class MoveDto(
+    val latitude: Int,
+    val longitude: Int
+)
 
 data class RobotDto(
     val id: Int? = null,
@@ -62,6 +75,11 @@ data class RobotRecord(
     val name: String,
     val latitude: Int,
     val longitude: Int
+)
+
+private fun RobotRecord.applyMove(moveDto: MoveDto) = this.copy(
+    latitude = this.latitude + moveDto.latitude,
+    longitude = this.longitude + moveDto.longitude
 )
 
 fun dtoToRecord(dto: RobotDto) = RobotRecord(

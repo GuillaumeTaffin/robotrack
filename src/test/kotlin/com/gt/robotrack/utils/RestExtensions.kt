@@ -10,8 +10,12 @@ fun ValidatableWebTestClientResponse.extractBodyAsRobot(): RobotDto = this.extra
     .body()
     .`as`(RobotDto::class.java)
 
-fun WebTestClientRequestSpecification.robotIsCreated(name: String): RobotDto = this
-    .body(RobotDto(name = name))
+fun WebTestClientRequestSpecification.robotIsCreated(
+    name: String,
+    latitude: Int = 0,
+    longitude: Int = 0
+): RobotDto = this
+    .body(RobotDto(name = name, latitude = latitude, longitude = longitude))
     .post("/robots")
     .then()
     .status(HttpStatus.CREATED)

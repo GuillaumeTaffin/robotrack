@@ -8,7 +8,7 @@ Below are the description of the task and more details on how the bullets points
         - [x] As a user I want to be able to remove a robot
         - [x] As a user I want to be able to list all robots
         - [x] As a user I want to be able to get one robot
-        - [ ] As a user I want to be able to command to one robot to move
+        - [x] As a user I want to be able to command to one robot to move
     - [ ] Quality - Coverage
         - [x] Enable unit test and coverage
         - [x] Fail if coverage score is below 100%
