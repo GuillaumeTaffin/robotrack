@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS robots
 (
     id        SERIAL PRIMARY KEY,
-    name      VARCHAR          NOT NULL UNIQUE,
-    latitude  DOUBLE PRECISION NOT NULL DEFAULT 0.0,
-    longitude DOUBLE PRECISION NOT NULL DEFAULT 0.0
+    name      VARCHAR NOT NULL UNIQUE,
+    latitude  INT2    NOT NULL DEFAULT 0,
+    longitude INT2    NOT NULL DEFAULT 0
 );

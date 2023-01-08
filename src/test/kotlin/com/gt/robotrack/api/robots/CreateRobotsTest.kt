@@ -35,8 +35,8 @@ class CreateRobotsTest(@Autowired webTestClient: WebTestClient) : BaseApiTests(w
             .body(
                 RobotDto(
                     name = "Bob",
-                    latitude = -45.8,
-                    longitude = 166.9
+                    latitude = -45,
+                    longitude = 166
                 )
             )
             .post("/robots")
@@ -47,8 +47,8 @@ class CreateRobotsTest(@Autowired webTestClient: WebTestClient) : BaseApiTests(w
         with(bob) {
             assertThat(id).isNotNull
             assertThat(name).isEqualTo("Bob")
-            assertThat(latitude).isEqualTo(-45.8)
-            assertThat(longitude).isEqualTo(166.9)
+            assertThat(latitude).isEqualTo(-45)
+            assertThat(longitude).isEqualTo(166)
         }
     }
 

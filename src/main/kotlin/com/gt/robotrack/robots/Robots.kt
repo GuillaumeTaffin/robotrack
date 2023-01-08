@@ -52,16 +52,16 @@ class Robots(
 data class RobotDto(
     val id: Int? = null,
     val name: String,
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0
+    val latitude: Int = 0,
+    val longitude: Int = 0
 )
 
 @Table("robots")
 data class RobotRecord(
     @Id val id: Int?,
     val name: String,
-    val latitude: Double,
-    val longitude: Double
+    val latitude: Int,
+    val longitude: Int
 )
 
 fun dtoToRecord(dto: RobotDto) = RobotRecord(
