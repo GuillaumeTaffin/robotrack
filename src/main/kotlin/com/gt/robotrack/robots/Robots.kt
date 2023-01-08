@@ -41,6 +41,12 @@ class Robots(
             .map { recordToDto(it) }
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun deleteRobot(@PathVariable("id") id: Int): Mono<Void> {
+        return repository.deleteById(id)
+    }
+
 }
 
 data class RobotDto(
