@@ -1,14 +1,16 @@
 package com.gt.robotrack.robots
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
-import org.springframework.data.repository.kotlin.CoroutineCrudRepository
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import reactor.core.publisher.Mono.error
+import reactor.kotlin.core.publisher.switchIfEmpty
 import java.util.*
 
 @RestController
@@ -19,21 +21,23 @@ class Robots(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    suspend fun createRobot(@RequestBody dto: RobotDto): RobotDto {
-        return recordToDto(repository.save(dtoToRecord(dto)))
+    fun createRobot(@RequestBody dto: RobotDto): Mono<RobotDto> {
+        return repository.save(dtoToRecord(dto))
+            .map { recordToDto(it) }
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    suspend fun getRobot(@PathVariable("id") id: Int): RobotDto {
-        val record = repository.findById(id) ?: throw RobotNotFoundException()
-        return recordToDto(record)
+    fun getRobot(@PathVariable("id") id: Int): Mono<RobotRecord> {
+        return repository.findById(id)
+            .switchIfEmpty { error(RobotNotFoundException()) }
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    suspend fun getAllRobots(): Flow<RobotDto> {
-        return repository.findAll()
+    fun getAllRobots(): Flux<RobotDto> {
+        return repository
+            .findAll()
             .map { recordToDto(it) }
     }
 
@@ -48,10 +52,10 @@ data class RobotDto(
 
 @Table("robots")
 data class RobotRecord(
-    @Id var id: Int?,
-    var name: String,
-    var latitude: Double,
-    var longitude: Double
+    @Id val id: Int?,
+    val name: String,
+    val latitude: Double,
+    val longitude: Double
 )
 
 fun dtoToRecord(dto: RobotDto) = RobotRecord(
@@ -69,7 +73,7 @@ fun recordToDto(dto: RobotRecord) = RobotDto(
 )
 
 @Repository
-interface RobotsRepository : CoroutineCrudRepository<RobotRecord, Int>
+interface RobotsRepository : ReactiveCrudRepository<RobotRecord, Int>
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class RobotNotFoundException : Exception()

@@ -29,4 +29,27 @@ class CreateRobotsTest(@Autowired webTestClient: WebTestClient) : BaseApiTests(w
         }
     }
 
+    @Test
+    fun `Should allow to choose the creation coordinates`() {
+        val bob = given()
+            .body(
+                RobotDto(
+                    name = "Bob",
+                    latitude = -45.8,
+                    longitude = 166.9
+                )
+            )
+            .post("/robots")
+            .then()
+            .status(HttpStatus.CREATED)
+            .extractBodyAsRobot()
+
+        with(bob) {
+            assertThat(id).isNotNull
+            assertThat(name).isEqualTo("Bob")
+            assertThat(latitude).isEqualTo(-45.8)
+            assertThat(longitude).isEqualTo(166.9)
+        }
+    }
+
 }

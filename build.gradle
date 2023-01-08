@@ -56,19 +56,62 @@ dependencies {
 
 pitest {
     junit5PluginVersion = '1.1.1'
-    excludedClasses = ['com.gt.robotrack.RobotrackApplicationKt']
+    excludedClasses = [
+            'com.gt.robotrack.RobotrackApplicationKt',
+    ]
+    withHistory = true
+    avoidCallsTo = [
+            'kotlin.jvm.internal',
+            'org.slf4j',
+            'java.util.logging',
+            'org.apache.log4j',
+            'org.apache.commons.logging'
+    ]
+    coverageThreshold = 100
+    mutationThreshold = 100
+}
+
+
+jacoco {
+    toolVersion = "0.8.8"
 }
 
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            element = 'CLASS'
-            excludes = ['**.RobotrackApplicationKt']
+            element = 'SOURCEFILE'
+            excludes = [
+                    '**RobotrackApplication**',
+            ]
 
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
                 minimum = 1.0
+            }
+        }
+        rule {
+            element = 'SOURCEFILE'
+            excludes = [
+                    '**RobotrackApplication**',
+            ]
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+        }
+        rule {
+            element = 'METHOD'
+            excludes = [
+                    '**RobotrackApplication**',
+            ]
+
+            limit {
+                counter = 'COMPLEXITY'
+                value = 'TOTALCOUNT'
+                maximum = 1.0
             }
         }
     }
@@ -97,4 +140,12 @@ tasks.withType(KotlinCompile).configureEach {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+tasks.register("ciPipeline") {
+    dependsOn tasks.build
+    dependsOn tasks.jacocoTestReport
+    dependsOn tasks.jacocoTestCoverageVerification
+    dependsOn tasks.pitest
+    tasks.jacocoTestCoverageVerification.mustRunAfter tasks.jacocoTestReport
 }

@@ -4,21 +4,27 @@ Below are the description of the task and more details on how the bullets points
 
 - [ ] MAIN
     - [ ] Use cases
-        - [ ] As a user I want to be able to add a robot
+        - [x] As a user I want to be able to add a robot
         - [ ] As a user I want to be able to remove a robot
-        - [ ] As a user I want to be able to list all robots
-        - [ ] As a user I want to be able to get one robot
+        - [x] As a user I want to be able to list all robots
+        - [x] As a user I want to be able to get one robot
         - [ ] As a user I want to be able to command to one robot to move
     - [ ] Quality - Coverage
         - [x] Enable unit test and coverage
-        - [ ] Fail if coverage score is below 100%
+        - [x] Fail if coverage score is below 100%
         - [ ] Document exclusions
 - [ ] Bonus 1 - Wholes in the map
 - [ ] Bonus 2 - Notification on Robot moves
 - [ ] Bonus 3 - Mutation Testing
     - [x] Enable mutation testing
-    - [ ] Fail if mutations score is below 100%
+    - [x] Fail if mutations score is below 100%
     - [ ] Document exclusions
+
+To run the full CI pipeline use the command
+
+```
+./gradlew ciPipeline
+```
 
 ## TRIAL TASK
 
