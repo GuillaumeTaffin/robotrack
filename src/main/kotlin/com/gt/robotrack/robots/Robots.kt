@@ -16,7 +16,8 @@ import java.util.*
 @RestController
 @RequestMapping("/robots")
 class Robots(
-    @Autowired val repository: RobotsRepository
+    @Autowired val repository: RobotsRepository,
+    @Autowired val moveNotifications: MoveNotifications
 ) {
 
     @PostMapping
@@ -53,6 +54,7 @@ class Robots(
             .map { it.applyMove(moveDto) }
             .flatMap { repository.save(it) }
             .map { recordToDto(it) }
+            .doOnNext { moveNotifications.sendMoveNotification(it) }
     }
 
 }

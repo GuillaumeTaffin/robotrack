@@ -15,6 +15,7 @@ Below are the description of the task and more details on how the bullets points
         - [ ] Document exclusions
 - [ ] Bonus 1 - Wholes in the map
 - [ ] Bonus 2 - Notification on Robot moves
+    - [x] As a user I want to be notified when a robot moves
 - [ ] Bonus 3 - Mutation Testing
     - [x] Enable mutation testing
     - [x] Fail if mutations score is below 100%
