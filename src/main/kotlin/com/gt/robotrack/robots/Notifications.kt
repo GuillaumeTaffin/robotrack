@@ -17,17 +17,16 @@ class MoveNotifications {
 
     @GetMapping
     fun moveNotifications(): Flux<ServerSentEvent<RobotDto>> {
-
         return Flux.concat(
             Flux.just(
                 sse {
-                    event = "robot-move-connected"
+                    event("robot-move-connected")
                 }
             ),
             eventSink.asFlux().map {
                 sse {
-                    event = "robot-move"
-                    data = it
+                    event("robot-move")
+                    data(it)
                 }
             }
         )
@@ -45,19 +44,3 @@ fun <T> sse(bloc: ServerSentEvent.Builder<T>.() -> Unit): ServerSentEvent<T> {
     builder.bloc()
     return builder.build()
 }
-
-var <T> ServerSentEvent.Builder<T>.event: String?
-    get() {
-        return null
-    }
-    set(value) {
-        event(value!!)
-    }
-
-var <T> ServerSentEvent.Builder<T>.data: T?
-    get() {
-        return null
-    }
-    set(value) {
-        data(value)
-    }
