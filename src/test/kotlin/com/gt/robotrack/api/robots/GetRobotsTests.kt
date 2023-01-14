@@ -64,7 +64,7 @@ class GetRobotsTests(
     }
 
     @Test
-    fun `Should fail when trying to get a reobot that does not exists`() {
+    fun `Should fail when trying to get a robot that does not exists`() {
         val id = (1000..100000).random()
 
         get("robots/$id")

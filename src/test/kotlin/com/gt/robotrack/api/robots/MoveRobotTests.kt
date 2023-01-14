@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.test.web.reactive.server.WebTestClient
+import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
+import java.time.Duration
 
 
 class MoveRobotTests(
@@ -25,12 +27,7 @@ class MoveRobotTests(
     fun `Should provide new robot coordinates when a move command is sent`() {
         val piper = given().robotIsCreated(name = "piper", latitude = -3, longitude = 92)
 
-        val notifications = webTestClient.get()
-            .uri("/notifications/move")
-            .accept(MediaType.TEXT_EVENT_STREAM)
-            .exchange()
-            .expectStatus().isOk
-            .returnResult(typeReference<ServerSentEvent<RobotDto>>())
+        val notificationFeed = connectNotificationFeed()
 
         val piperAfterMoving = given()
             .body(
@@ -51,18 +48,33 @@ class MoveRobotTests(
             assertThat(longitude).isEqualTo(68)
         }
 
-        StepVerifier.create(notifications.responseBody)
-            .consumeNextWith {
+        verifyOn(notificationFeed) {
+            consumeNextWith {
                 assertThat(it.event()).isEqualTo("robot-move-connected")
             }
-            .consumeNextWith {
+            consumeNextWith {
                 assertThat(it.event()).isEqualTo("robot-move")
                 assertThat(it.data()).isEqualTo(piperAfterMoving)
             }
-            .thenCancel()
-            .verify()
+        }
     }
 
+    private fun connectNotificationFeed() = webTestClient.get()
+        .uri("/notifications/move")
+        .accept(MediaType.TEXT_EVENT_STREAM)
+        .exchange()
+        .expectStatus().isOk
+        .returnResult(typeReference<ServerSentEvent<RobotDto>>())
+        .responseBody
+
 }
+
+fun <T> verifyOn(flux: Flux<T>, block: StepVerifier.FirstStep<T>.() -> Unit): Duration =
+    StepVerifier
+        .create(flux)
+        .apply(block)
+        .thenCancel()
+        .verify()
+
 
 inline fun <reified T> typeReference() = object : ParameterizedTypeReference<T>() {}

@@ -61,6 +61,7 @@ pitest {
             'com.gt.robotrack.RobotrackApplicationKt',
     ]
     withHistory = true
+    threads = 2
     avoidCallsTo = [
             'kotlin.jvm.internal',
             'org.slf4j',
