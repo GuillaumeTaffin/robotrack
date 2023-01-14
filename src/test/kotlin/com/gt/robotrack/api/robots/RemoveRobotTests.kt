@@ -22,4 +22,5 @@ class RemoveRobotTests(@Autowired webTestClient: WebTestClient) : BaseApiTests(w
             .then()
             .status(HttpStatus.NOT_FOUND)
     }
+    
 }

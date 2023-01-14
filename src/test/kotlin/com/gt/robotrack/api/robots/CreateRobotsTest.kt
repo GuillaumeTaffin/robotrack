@@ -3,8 +3,9 @@ package com.gt.robotrack.api.robots
 import com.gt.robotrack.api.BaseApiTests
 import com.gt.robotrack.robots.RobotDto
 import com.gt.robotrack.utils.extractBodyAsRobot
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.restassured.module.webtestclient.RestAssuredWebTestClient.given
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -22,10 +23,10 @@ class CreateRobotsTest(@Autowired webTestClient: WebTestClient) : BaseApiTests(w
             .extractBodyAsRobot()
 
         with(createdRobot) {
-            assertThat(id).isNotNull
-            assertThat(name).isEqualTo("Ted")
-            assertThat(latitude).isZero
-            assertThat(longitude).isZero
+            id shouldNotBe null
+            name shouldBe "Ted"
+            latitude shouldBe 0
+            longitude shouldBe 0
         }
     }
 
@@ -45,10 +46,10 @@ class CreateRobotsTest(@Autowired webTestClient: WebTestClient) : BaseApiTests(w
             .extractBodyAsRobot()
 
         with(bob) {
-            assertThat(id).isNotNull
-            assertThat(name).isEqualTo("Bob")
-            assertThat(latitude).isEqualTo(-45)
-            assertThat(longitude).isEqualTo(166)
+            id shouldNotBe null
+            name shouldBe "Bob"
+            latitude shouldBe -45
+            longitude shouldBe 166
         }
     }
 

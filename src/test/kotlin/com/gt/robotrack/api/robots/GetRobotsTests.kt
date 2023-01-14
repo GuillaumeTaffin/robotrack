@@ -5,9 +5,10 @@ import com.gt.robotrack.robots.RobotDto
 import com.gt.robotrack.robots.RobotsRepository
 import com.gt.robotrack.utils.extractBodyAsRobot
 import com.gt.robotrack.utils.robotIsCreated
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.shouldBe
 import io.restassured.module.webtestclient.RestAssuredWebTestClient.get
 import io.restassured.module.webtestclient.RestAssuredWebTestClient.given
-import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,7 +37,7 @@ class GetRobotsTests(
             .status(HttpStatus.OK)
             .extractBodyAsRobot()
 
-        assertThat(gottenRobot).isEqualTo(tod)
+        gottenRobot shouldBe tod
     }
 
     @Test
@@ -52,7 +53,7 @@ class GetRobotsTests(
             .jsonPath()
             .getList(".", RobotDto::class.java)
 
-        assertThat(gottenRobots).containsAll(robots)
+        gottenRobots shouldContainAll robots
     }
 
     @Test

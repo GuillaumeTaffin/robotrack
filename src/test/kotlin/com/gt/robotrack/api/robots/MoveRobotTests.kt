@@ -5,8 +5,8 @@ import com.gt.robotrack.robots.MoveDto
 import com.gt.robotrack.robots.RobotDto
 import com.gt.robotrack.utils.extractBodyAsRobot
 import com.gt.robotrack.utils.robotIsCreated
+import io.kotest.matchers.shouldBe
 import io.restassured.module.webtestclient.RestAssuredWebTestClient.given
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
@@ -42,19 +42,19 @@ class MoveRobotTests(
             .extractBodyAsRobot()
 
         with(piperAfterMoving) {
-            assertThat(id).isEqualTo(piper.id)
-            assertThat(name).isEqualTo(piper.name)
-            assertThat(latitude).isEqualTo(53)
-            assertThat(longitude).isEqualTo(68)
+            id shouldBe piper.id
+            name shouldBe piper.name
+            latitude shouldBe 53
+            longitude shouldBe 68
         }
 
         verifyOn(notificationFeed) {
             consumeNextWith {
-                assertThat(it.event()).isEqualTo("robot-move-connected")
+                it.event() shouldBe "robot-move-connected"
             }
             consumeNextWith {
-                assertThat(it.event()).isEqualTo("robot-move")
-                assertThat(it.data()).isEqualTo(piperAfterMoving)
+                it.event() shouldBe "robot-move"
+                it.data() shouldBe piperAfterMoving
             }
         }
     }
