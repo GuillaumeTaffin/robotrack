@@ -74,6 +74,13 @@ class RobotsService(
             .flatMap { repository.save(it) }
             .map { recordToDto(it) }
             .doOnNext { notificationsService.sendMoveNotification(it) }
+
+
+    private fun RobotRecord.applyMove(moveDto: MoveDto) = this.copy(
+        latitude = this.latitude + moveDto.latitude,
+        longitude = this.longitude + moveDto.longitude
+    )
+
 }
 
 data class MoveDto(
@@ -94,11 +101,6 @@ data class RobotRecord(
     val name: String,
     val latitude: Int,
     val longitude: Int
-)
-
-private fun RobotRecord.applyMove(moveDto: MoveDto) = this.copy(
-    latitude = this.latitude + moveDto.latitude,
-    longitude = this.longitude + moveDto.longitude
 )
 
 fun dtoToRecord(dto: RobotDto) = RobotRecord(
