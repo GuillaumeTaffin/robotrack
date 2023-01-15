@@ -6,6 +6,7 @@ import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -16,47 +17,63 @@ import java.util.*
 @RestController
 @RequestMapping("/robots")
 class Robots(
-    @Autowired val repository: RobotsRepository,
-    @Autowired val moveNotifications: MoveNotifications
+    @Autowired val moveNotifications: MoveNotifications,
+    private val robotsService: RobotsService,
 ) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createRobot(@RequestBody dto: RobotDto): Mono<RobotDto> {
-        return repository.save(dtoToRecord(dto))
-            .map { recordToDto(it) }
-    }
+    fun createRobot(@RequestBody dto: RobotDto): Mono<RobotDto> = robotsService.createRobot(dto)
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getRobot(@PathVariable("id") id: Int): Mono<RobotRecord> {
-        return repository.findById(id)
-            .switchIfEmpty { error(RobotNotFoundException()) }
-    }
+    fun getRobot(@PathVariable("id") id: Int): Mono<RobotRecord> = robotsService.getRobot(id)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAllRobots(): Flux<RobotDto> {
-        return repository
-            .findAll()
-            .map { recordToDto(it) }
-    }
+    fun getAllRobots(): Flux<RobotDto> = robotsService.getRobots()
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun deleteRobot(@PathVariable("id") id: Int): Mono<Void> {
-        return repository.deleteById(id)
-    }
+    fun deleteRobot(@PathVariable("id") id: Int): Mono<Void> = robotsService.deleteRobot(id)
 
     @PostMapping("/{id}/move")
-    fun moveRobot(@RequestBody moveDto: MoveDto, @PathVariable id: Int): Mono<RobotDto> {
-        return repository.findById(id)
+    fun moveRobot(@RequestBody moveDto: MoveDto, @PathVariable id: Int): Mono<RobotDto> =
+        robotsService
+            .moveRobot(id, moveDto)
+
+}
+
+@Service
+class RobotsService(
+    private val repository: RobotsRepository,
+    private val notificationsService: NotificationsService
+) {
+
+    fun createRobot(robotDto: RobotDto): Mono<RobotDto> =
+        repository
+            .save(dtoToRecord(robotDto))
+            .map { recordToDto(it) }
+
+    fun getRobot(id: Int): Mono<RobotRecord> =
+        repository
+            .findById(id)
+            .switchIfEmpty { error(RobotNotFoundException()) }
+
+    fun getRobots(): Flux<RobotDto> =
+        repository
+            .findAll()
+            .map { recordToDto(it) }
+
+    fun deleteRobot(id: Int): Mono<Void> = repository.deleteById(id)
+
+    fun moveRobot(robotId: Int, moveDto: MoveDto): Mono<RobotDto> =
+        repository
+            .findById(robotId)
             .map { it.applyMove(moveDto) }
             .flatMap { repository.save(it) }
             .map { recordToDto(it) }
-            .doOnNext { moveNotifications.sendMoveNotification(it) }
-    }
-
+            .doOnNext { notificationsService.sendMoveNotification(it) }
 }
 
 data class MoveDto(
