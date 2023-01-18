@@ -88,3 +88,8 @@ I excluded the main application class, as well as for the code coverage.
 ./gradlew pitest
 ```
 
+
+
+## Contributors
+
+- [Guillaume Taffin](https://www.linkedin.com/in/guillaume-taffin-31343b129/) ([GuillaumeTaffin](https://github.com/GuillaumeTaffin))
