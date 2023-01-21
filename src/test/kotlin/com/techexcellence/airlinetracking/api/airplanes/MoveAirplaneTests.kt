@@ -1,10 +1,10 @@
-package com.gt.robotrack.api.robots
+package com.techexcellence.airlinetracking.api.airplanes
 
-import com.gt.robotrack.api.BaseApiTests
-import com.gt.robotrack.robots.MoveDto
-import com.gt.robotrack.robots.RobotDto
-import com.gt.robotrack.utils.extractBodyAsRobot
-import com.gt.robotrack.utils.robotIsCreated
+import com.techexcellence.airlinetracking.api.BaseApiTests
+import com.techexcellence.airlinetracking.airplanes.MoveDto
+import com.techexcellence.airlinetracking.airplanes.AirplaneDto
+import com.techexcellence.airlinetracking.utils.extractBodyAsAirplane
+import com.techexcellence.airlinetracking.utils.airplaineIsTracked
 import io.kotest.matchers.shouldBe
 import io.restassured.module.webtestclient.RestAssuredWebTestClient.given
 import org.junit.jupiter.api.Test
@@ -19,13 +19,13 @@ import reactor.test.StepVerifier
 import java.time.Duration
 
 
-class MoveRobotTests(
+class MoveAirplaneTests(
     @Autowired webTestClient: WebTestClient
 ) : BaseApiTests(webTestClient) {
 
     @Test
-    fun `Should provide new robot coordinates when a move command is sent`() {
-        val piper = given().robotIsCreated(name = "piper", latitude = -3, longitude = 92)
+    fun `Should provide new airplane coordinates when a move command is sent`() {
+        val piper = given().airplaineIsTracked(name = "piper", latitude = -3, longitude = 92)
 
         val notificationFeed = connectNotificationFeed()
 
@@ -36,10 +36,10 @@ class MoveRobotTests(
                     longitude = -24
                 )
             )
-            .post("robots/${piper.id}/move")
+            .post("airplanes/${piper.id}/move")
             .then()
             .status(HttpStatus.OK)
-            .extractBodyAsRobot()
+            .extractBodyAsAirplane()
 
         with(piperAfterMoving) {
             id shouldBe piper.id
@@ -50,10 +50,10 @@ class MoveRobotTests(
 
         verifyOn(notificationFeed) {
             consumeNextWith {
-                it.event() shouldBe "robot-move-connected"
+                it.event() shouldBe "airplane-move-connected"
             }
             consumeNextWith {
-                it.event() shouldBe "robot-move"
+                it.event() shouldBe "airplane-move"
                 it.data() shouldBe piperAfterMoving
             }
         }
@@ -64,7 +64,7 @@ class MoveRobotTests(
         .accept(MediaType.TEXT_EVENT_STREAM)
         .exchange()
         .expectStatus().isOk
-        .returnResult(typeReference<ServerSentEvent<RobotDto>>())
+        .returnResult(typeReference<ServerSentEvent<AirplaneDto>>())
         .responseBody
 
 }

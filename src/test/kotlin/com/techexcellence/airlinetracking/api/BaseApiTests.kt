@@ -1,4 +1,4 @@
-package com.gt.robotrack.api
+package com.techexcellence.airlinetracking.api
 
 import io.restassured.config.JsonConfig
 import io.restassured.config.LogConfig
@@ -33,7 +33,7 @@ abstract class BaseApiTests(
         fun dynamicProperties(registry: DynamicPropertyRegistry) {
             Startables.deepStart(postgres).join()
 
-            registry.add("spring.r2dbc.url", BaseApiTests::r2dbcUrl)
+            registry.add("spring.r2dbc.url", Companion::r2dbcUrl)
             registry.add("spring.r2dbc.username", postgres::getUsername)
             registry.add("spring.r2dbc.password", postgres::getPassword)
             registry.add("spring.flyway.url", postgres::getJdbcUrl)

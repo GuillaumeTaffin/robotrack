@@ -1,4 +1,4 @@
-package com.gt.robotrack.robots
+package com.techexcellence.airlinetracking.airplanes
 
 import org.springframework.http.codec.ServerSentEvent
 import org.springframework.stereotype.Service
@@ -17,14 +17,14 @@ class MoveNotifications(
 ) {
 
     @GetMapping
-    fun moveNotifications(): Flux<ServerSentEvent<RobotDto>> = Flux.concat(
+    fun moveNotifications(): Flux<ServerSentEvent<AirplaneDto>> = Flux.concat(
         connectionStartEvent(),
         notificationsService.moveEvents()
     )
 
-    private fun connectionStartEvent(): Flux<ServerSentEvent<RobotDto>> = Flux.just(
+    private fun connectionStartEvent(): Flux<ServerSentEvent<AirplaneDto>> = Flux.just(
         sse {
-            event("robot-move-connected")
+            event("airplane-move-connected")
         }
     )
 
@@ -32,19 +32,19 @@ class MoveNotifications(
 
 @Service
 class NotificationsService {
-    private val eventSink: Many<RobotDto> = Sinks.many().multicast().onBackpressureBuffer()
+    private val eventSink: Many<AirplaneDto> = Sinks.many().multicast().onBackpressureBuffer()
 
-    fun sendMoveNotification(robotDto: RobotDto) =
-        eventSink.tryEmitNext(robotDto)
+    fun sendMoveNotification(airplaneDto: AirplaneDto) =
+        eventSink.tryEmitNext(airplaneDto)
 
-    fun moveEvents(): Flux<ServerSentEvent<RobotDto>> =
+    fun moveEvents(): Flux<ServerSentEvent<AirplaneDto>> =
         eventSink
             .asFlux()
             .map { wrapMoveInNotification(it) }
 
-    private fun wrapMoveInNotification(it: RobotDto) =
+    private fun wrapMoveInNotification(it: AirplaneDto) =
         sse {
-            event("robot-move")
+            event("airplane-move")
             data(it)
         }
 
