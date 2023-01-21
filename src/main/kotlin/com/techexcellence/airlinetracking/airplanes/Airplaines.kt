@@ -1,4 +1,4 @@
-package com.gt.robotrack.robots
+package com.techexcellence.airlinetracking.airplanes
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.annotation.Id
@@ -15,68 +15,68 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 import java.util.*
 
 @RestController
-@RequestMapping("/robots")
-class Robots(
+@RequestMapping("/airplanes")
+class AirplanesController(
     @Autowired val moveNotifications: MoveNotifications,
-    private val robotsService: RobotsService,
+    private val airplaneService: AirplaneService,
 ) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createRobot(@RequestBody dto: RobotDto): Mono<RobotDto> = robotsService.createRobot(dto)
+    fun trackAirplane(@RequestBody dto: AirplaneDto): Mono<AirplaneDto> = airplaneService.trackAirplane(dto)
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getRobot(@PathVariable("id") id: Int): Mono<RobotRecord> = robotsService.getRobot(id)
+    fun findAirplane(@PathVariable("id") id: Int): Mono<AirplaneDto> = airplaneService.findAirplane(id)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAllRobots(): Flux<RobotDto> = robotsService.getRobots()
+    fun findAllAirplanes(): Flux<AirplaneDto> = airplaneService.findAllAirplanes()
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun deleteRobot(@PathVariable("id") id: Int): Mono<Void> = robotsService.deleteRobot(id)
+    fun stopTrackingAirplane(@PathVariable("id") id: Int): Mono<Void> = airplaneService.stropTrackingAirplane(id)
 
     @PostMapping("/{id}/move")
-    fun moveRobot(@RequestBody moveDto: MoveDto, @PathVariable id: Int): Mono<RobotDto> =
-        robotsService
-            .moveRobot(id, moveDto)
+    fun moveAirplane(@RequestBody moveDto: MoveDto, @PathVariable id: Int): Mono<AirplaneDto> =
+        airplaneService
+            .moveAirplane(id, moveDto)
 
 }
 
 @Service
-class RobotsService(
-    private val repository: RobotsRepository,
+class AirplaneService(
+    private val registry: AirplanesRegistry,
     private val notificationsService: NotificationsService
 ) {
 
-    fun createRobot(robotDto: RobotDto): Mono<RobotDto> =
-        repository
-            .save(dtoToRecord(robotDto))
+    fun trackAirplane(airplaneDto: AirplaneDto): Mono<AirplaneDto> =
+        registry
+            .save(dtoToRecord(airplaneDto))
             .map { recordToDto(it) }
 
-    fun getRobot(id: Int): Mono<RobotRecord> =
-        repository
+    fun findAirplane(id: Int): Mono<AirplaneDto> =
+        registry
             .findById(id)
-            .switchIfEmpty { error(RobotNotFoundException()) }
+            .map { recordToDto(it) }
+            .switchIfEmpty { error(AirplaneNotFoundException()) }
 
-    fun getRobots(): Flux<RobotDto> =
-        repository
+    fun findAllAirplanes(): Flux<AirplaneDto> =
+        registry
             .findAll()
             .map { recordToDto(it) }
 
-    fun deleteRobot(id: Int): Mono<Void> = repository.deleteById(id)
+    fun stropTrackingAirplane(id: Int): Mono<Void> = registry.deleteById(id)
 
-    fun moveRobot(robotId: Int, moveDto: MoveDto): Mono<RobotDto> =
-        repository
-            .findById(robotId)
+    fun moveAirplane(id: Int, moveDto: MoveDto): Mono<AirplaneDto> =
+        registry
+            .findById(id)
             .map { it.applyMove(moveDto) }
-            .flatMap { repository.save(it) }
+            .flatMap { registry.save(it) }
             .map { recordToDto(it) }
             .doOnNext { notificationsService.sendMoveNotification(it) }
 
-
-    private fun RobotRecord.applyMove(moveDto: MoveDto) = this.copy(
+    private fun AirplaneRecord.applyMove(moveDto: MoveDto) = this.copy(
         latitude = this.latitude + moveDto.latitude,
         longitude = this.longitude + moveDto.longitude
     )
@@ -88,29 +88,29 @@ data class MoveDto(
     val longitude: Int
 )
 
-data class RobotDto(
+data class AirplaneDto(
     val id: Int? = null,
     val name: String,
     val latitude: Int = 0,
     val longitude: Int = 0
 )
 
-@Table("robots")
-data class RobotRecord(
+@Table("airplanes")
+data class AirplaneRecord(
     @Id val id: Int?,
     val name: String,
     val latitude: Int,
     val longitude: Int
 )
 
-fun dtoToRecord(dto: RobotDto) = RobotRecord(
+fun dtoToRecord(dto: AirplaneDto) = AirplaneRecord(
     id = dto.id,
     name = dto.name,
     latitude = dto.latitude,
     longitude = dto.longitude
 )
 
-fun recordToDto(dto: RobotRecord) = RobotDto(
+fun recordToDto(dto: AirplaneRecord) = AirplaneDto(
     id = dto.id,
     name = dto.name,
     latitude = dto.latitude,
@@ -118,7 +118,7 @@ fun recordToDto(dto: RobotRecord) = RobotDto(
 )
 
 @Repository
-interface RobotsRepository : ReactiveCrudRepository<RobotRecord, Int>
+interface AirplanesRegistry : ReactiveCrudRepository<AirplaneRecord, Int>
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-class RobotNotFoundException : Exception()
+class AirplaneNotFoundException : Exception()

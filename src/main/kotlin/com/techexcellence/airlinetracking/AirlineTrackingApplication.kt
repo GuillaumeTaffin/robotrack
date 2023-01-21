@@ -1,11 +1,11 @@
-package com.gt.robotrack
+package com.techexcellence.airlinetracking
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class RobotrackApplication
+class AirlineTrackingApplication
 
 fun main(args: Array<String>) {
-	runApplication<RobotrackApplication>(*args)
+	runApplication<AirlineTrackingApplication>(*args)
 }

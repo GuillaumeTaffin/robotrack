@@ -12,7 +12,7 @@ plugins {
 
 def restAssuredVersion = '5.3.0'
 
-group = 'com.gt'
+group = 'com.techexcellence'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -59,7 +59,7 @@ dependencies {
 pitest {
     junit5PluginVersion = '1.1.1'
     excludedClasses = [
-            'com.gt.robotrack.RobotrackApplicationKt',
+            'com.techexcellence.airlinetracking.AirlineTrackingApplicationKt',
     ]
     withHistory = true
     threads = 2
@@ -84,7 +84,7 @@ jacocoTestCoverageVerification {
         rule {
             element = 'SOURCEFILE'
             excludes = [
-                    '**RobotrackApplication**',
+                    '**AirlineTrackingApplication**',
             ]
 
             limit {
@@ -96,7 +96,7 @@ jacocoTestCoverageVerification {
         rule {
             element = 'SOURCEFILE'
             excludes = [
-                    '**RobotrackApplication**',
+                    '**AirlineTrackingApplication**',
             ]
 
             limit {
@@ -108,7 +108,7 @@ jacocoTestCoverageVerification {
         rule {
             element = 'METHOD'
             excludes = [
-                    '**RobotrackApplication**',
+                    '**AirlineTrackingApplication**',
             ]
 
             limit {
@@ -123,7 +123,7 @@ jacocoTestCoverageVerification {
 jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: '**/RobotrackApplicationKt**')
+            fileTree(dir: it, exclude: '**/AirlineTrackingApplicationKt**')
         }))
     }
 }
