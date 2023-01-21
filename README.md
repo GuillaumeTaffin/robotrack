@@ -1,3 +1,5 @@
+![example workflow](https://github.com/techexcellenceio/airline-tracking/actions/workflows/ci.yml/badge.svg)
+
 # ROBOTRACK
 
 Below are the description of the task and more details on how the bullets points are fulfilled.
@@ -87,8 +89,6 @@ I excluded the main application class, as well as for the code coverage.
 ```
 ./gradlew pitest
 ```
-
-
 
 ## Contributors
 
